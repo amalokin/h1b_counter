@@ -2,7 +2,7 @@
 
 This tool is designed to produce aggregated statistics of **certified** H1b-visa applications based on the data provided by the US Department of Labor and its [Office of Foreign Labor Certification Performance Data](https://www.foreignlaborcert.doleta.gov/performancedata.cfm#dis). Aggregation is done separately by two attributes: **occupations** and **employment states**. At most 10 highest ranking attribute values (i.e., occupations or states) are outputted along with the number of certified applications and the share of this attribute value (in percents rounded to the first decimal place).
 
-The tool accepts as input a CSV (semicolon-delimeted) file named __h1b_input.csv__ in the __input__ subfolder. After a successful run, the script outputs two text files __top_10_occupations.txt__ and __top_10_states.txt__ into the __output__ subfolder. Filenames could be changed by editing the script file __run.sh__.
+The tool accepts as input a CSV (semicolon-delimeted) file named __`h1b_input.csv`__ in the __input__ subfolder. After a successful run, the script outputs two text files __top_10_occupations.txt__ and __top_10_states.txt__ into the __output__ subfolder. Filenames could be changed by editing the script file __run.sh__.
 
 See [Run](README.md#run) for additional input file structure requirements.
 
