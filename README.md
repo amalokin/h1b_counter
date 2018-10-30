@@ -1,20 +1,25 @@
 # Problem
 
-A newspaper editor was researching immigration data trends on H1B(H-1B, H-1B1, E-3) visa application processing over the past years, trying to identify the occupations and states with the most number of approved H1B visas. She has found statistics available from the US Department of Labor and its [Office of Foreign Labor Certification Performance Data](https://www.foreignlaborcert.doleta.gov/performancedata.cfm#dis). But while there are ready-made reports for [2018](https://www.foreignlaborcert.doleta.gov/pdf/PerformanceData/2018/H-1B_Selected_Statistics_FY2018_Q4.pdf) and [2017](https://www.foreignlaborcert.doleta.gov/pdf/PerformanceData/2017/H-1B_Selected_Statistics_FY2017.pdf), the site doesn’t have them for past years. 
+This tool is designed to produce aggregated statistics of **certified** H1b-visa applications based on the data provided by the US Department of Labor and its [Office of Foreign Labor Certification Performance Data](https://www.foreignlaborcert.doleta.gov/performancedata.cfm#dis). Aggregation is done separately by two attributes: **occupations** and **employment states**. At most 10 highest ranking attribute values (i.e., occupations or states) are outputted along with the number of certified applications and the share of this attribute value (in percents rounded to the first decimal place).
 
-As a data engineer, you are asked to create a mechanism to analyze past years data, specificially calculate two metrics: **Top 10 Occupations** and **Top 10 States** for **certified** visa applications.
+The tool accepts as input a CSV (semicolon-delimeted) file named __h1b_input.csv__ in the __input__ subfolder. After a successful run, the script outputs two text files __top_10_occupations.txt__ and __top_10_states.txt__ into the __output__ subfolder. Filenames could be changed by editing the script file __run.sh__.
 
-Your code should be modular and reusable for future. If the newspaper gets data for the year 2019 (with the assumption that the necessary data to calculate the metrics are available) and puts it in the `input` directory, running the `run.sh` script should produce the results in the `output` folder without needing to change the code.
+See [Run](README.md#run) for additional input file structure requirements.
 
-# Input Dataset
+# Approach
 
-Raw data could be found [here](https://www.foreignlaborcert.doleta.gov/performancedata.cfm) under the __Disclosure Data__ tab (i.e., files listed in the __Disclosure File__ column with ".xlsx" extension). 
-For your convenience we converted the Excel files into a semicolon separated (";") format and placed them into this Google drive [folder](https://drive.google.com/drive/folders/1Nti6ClUfibsXSQw5PUIWfVGSIrpuwyxf?usp=sharing). However, do not feel limited to test your code on only the files we've provided on the Google drive 
+The tool consists of a Python 3.x script that uses a standard csv library to read an input dataset. The script initializes two dictionaries (occupations and states) with attribute values and counters as keys and values, respectively. Only certified applications are counted. After reading the entire input file, counts are sorted, tallied up, and percent shares are calculated. The generated output of atmost 10 highest ranking attribute values has the following schema: TOP_<OCCUPATIONS,STATES>;NUMBER_CERTIFIED_APPLICATIONS;PERCENTAGE (for occupations and states, respectively).
 
-**Note:** Each year of data can have different columns. Check **File Structure** docs before development. 
+The script accepts different naming conventions for the used attributes (fields, variables, features). Please make sure that these attributes exist in your input data (i.e., rename the attributes in the data file if necessary):
 
-# Output 
+__STATUS__ or __CASE_STATUS__ for application status
+__LCA_CASE_SOC_NAME__ or __SOC_NAME__ for standardized occupation name
+__LCA_CASE_WORKLOC1_STATE__ or __WORKSITE_STATE__ for employment state
 
-Your program must create 2 output files:
-* `top_10_occupations.txt`: Top 10 occupations for certified visa applications
-* `top_10_states.txt`: Top 10 states for certified visa applications# h1b_counter
+Note:
+FY2014 data specifies up to two working locations. The current version of the script considers the first location (__LCA_CASE_WORKLOC1_STATE__ is state of the first location) as the primary location for the analysis. However, if state of the first location is missing, the state of the second location (__LCA_CASE_WORKLOC2_STATE__) is considered, if available.
+
+# Run 
+
+Run __./run.sh__ to generate statistics based on the provided input dataset.
+You can edit __run.sh__ to specify alternative paths and names for the python script, input dataset, top occupations text file, and top states text file.
